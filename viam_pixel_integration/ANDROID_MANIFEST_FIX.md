@@ -1,3 +1,17 @@
+# AndroidManifest.xml Fix Guide
+
+## Problem
+Your AndroidManifest.xml has several errors:
+1. Empty application name placeholder: `android:name="${}"`
+2. Unresolved class references for MainActivity, BootReceiver, UsbReceiver, and ViamBackgroundService
+
+## Solution
+
+### Step 1: Fix the AndroidManifest.xml
+
+Replace your current `android/app/src/main/AndroidManifest.xml` with this corrected version:
+
+```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.viam_pixel4a_sensors">
 
@@ -96,3 +110,56 @@
             android:value="2" />
     </application>
 </manifest>
+```
+
+### Step 2: Verify Kotlin File Locations
+
+Make sure your Kotlin files are in the correct location:
+
+```
+android/app/src/main/kotlin/com/example/viam_pixel4a_sensors/
+├── MainActivity.kt
+├── BootReceiver.kt
+├── UsbReceiver.kt
+└── ViamBackgroundService.kt
+```
+
+### Step 3: Check Package Declaration
+
+Each Kotlin file should start with:
+```kotlin
+package com.example.viam_pixel4a_sensors
+```
+
+### Step 4: Sync and Rebuild
+
+After making these changes:
+1. In Android Studio: File → Sync Project with Gradle Files
+2. Build → Clean Project
+3. Build → Rebuild Project
+
+## Key Changes Made
+
+1. **Removed empty placeholder**: Deleted `android:name="${}"` from application tag
+2. **Added missing permissions**: Added foreground service type permissions
+3. **Fixed receiver priorities**: Adjusted intent filter priorities
+4. **Changed service export**: Set ViamBackgroundService to `android:exported="false"` for security
+5. **Removed problematic action**: Removed `PACKAGE_REPLACED` with data scheme from BootReceiver
+
+## If Errors Persist
+
+If you still see "Unresolved class" errors:
+
+1. **Check build.gradle**: Ensure Kotlin is properly configured
+2. **Invalidate Caches**: File → Invalidate Caches / Restart
+3. **Check file names**: Ensure Kotlin files match the class names exactly
+4. **Verify package**: Ensure all files have the correct package declaration
+
+## Testing
+
+After fixing, test that:
+- App builds without errors
+- App installs on device
+- Boot receiver works (restart phone)
+- USB receiver detects connections
+- Background service starts properly
