@@ -1,0 +1,5 @@
+[viam-pixel-integration 10560d7] Add guide to fix local pubspec.yaml duplicate key
+ 1 file changed, 207 insertions(+)
+ create mode 100644 viam_pixel_integration/FIX_LOCAL_PUBSPEC.md
+To https://github.com/theholybull/kilo.git
+   f6bc36e..10560d7  viam-pixel-integration -> viam-pixel-integration

@@ -1,0 +1,4 @@
+[viam-pixel-integration 312e3a2] Add Gradle enablement guides
+ 2 files changed, 506 insertions(+)
+ create mode 100644 viam_pixel_integration/ENABLE_GRADLE_GUIDE.md
+ create mode 100644 viam_pixel_integration/QUICK_FIX_GRADLE.md

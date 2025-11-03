@@ -1,0 +1,3 @@
+          // Use local connection options for direct Pi connection$
+          insecure: true, // For local development$
+        );$

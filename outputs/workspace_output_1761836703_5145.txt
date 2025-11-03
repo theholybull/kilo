@@ -1,0 +1,1 @@
+Checking if user has Android development environment installed

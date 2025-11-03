@@ -1,0 +1,5 @@
+total 56
+drwxr-xr-x 3 root root    76 Oct 30 15:30 .
+drwxr-xr-x 1 root root  4096 Oct 30 15:30 ..
+drwxr-xr-x 8 root root  4096 Oct 30 15:30 .git
+-rw-r--r-- 1 root root 48882 Oct 30 15:30 Kilo Project Memory — 2025-10-24.pdf

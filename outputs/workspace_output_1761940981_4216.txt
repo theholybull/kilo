@@ -1,0 +1,3 @@
+[viam-pixel-integration 5408998] Add complete project rebuild guide
+ 1 file changed, 467 insertions(+)
+ create mode 100644 viam_pixel_integration/REBUILD_PROJECT_FROM_SCRATCH.md

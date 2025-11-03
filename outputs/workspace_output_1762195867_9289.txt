@@ -1,0 +1,1 @@
+53:                    child: CameraPreview(cameraProvider.currentCameraController!),

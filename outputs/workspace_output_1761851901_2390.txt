@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Indexing diagnostics of 'viam_pixel_integration'</title>
+    <style>body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+--
+            <tr>
+              <td>scanningTimeWithoutPauses</td>
+              <td>4 s 855 ms</td>
+            </tr>
+            <tr>
+              <td>pausedTimeInIndexingOrScanning</td>
+              <td>29 ms</td>
+            </tr>
+            <tr>
+              <td>dumbModeTimeWithPauses</td>
+              <td>845 ms</td>
+--
+            <tr>
+              <td>numberOfRunsOfScannning</td>
+              <td>14</td>
+            </tr>
+            <tr>
+              <td>numberOfRunsOfIndexing</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>processingSpeedAvg#XML</td>
+              <td>156</td>

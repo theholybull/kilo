@@ -1,0 +1,3 @@
+[viam-pixel-integration a9ceb56] Add flutter pub get error fix guide
+ 1 file changed, 249 insertions(+)
+ create mode 100644 viam_pixel_integration/FIX_FLUTTER_PUB_GET_ERROR.md

@@ -1,0 +1,21 @@
+total 38228
+drwxr-xr-x 1 root root     4096 Oct 30 15:30 .
+drwxr-xr-x 1 root root      122 Oct 30 15:30 ..
+-rw-r--r-- 1 root root       29 Oct 30 13:23 .created
+-rw-r--r-- 1 root root     7017 Oct 29 20:12 BUILD_INSTRUCTIONS.md
+-rw-r--r-- 1 root root     9593 Oct 29 20:14 LICENSE
+-rw-r--r-- 1 root root     9890 Oct 30 14:50 PC_ANDROID_SETUP_GUIDE.md
+-rw-r--r-- 1 root root     4602 Oct 30 14:59 QUICK_START_CHECKLIST.md
+-rw-r--r-- 1 root root    11137 Oct 30 13:04 README.md
+-rw-r--r-- 1 root root     7122 Oct 30 15:02 SIMPLE_START_APP.md
+-rw-r--r-- 1 root root     5842 Oct 29 20:11 analysis_options.yaml
+drwxr-xr-x 1 root root       25 Oct 29 19:52 android
+drwxr-xr-x 3 root root       76 Oct 30 15:30 kilo
+-rw-r--r-- 1 root root 39040961 Oct 30 12:50 kilo_migration_20251026_181213.tar.gz
+drwxr-xr-x 1 root root      110 Oct 29 20:01 lib
+drwxr-xr-x 2 root root     4096 Oct 30 15:30 outputs
+-rw-r--r-- 1 root root     7144 Oct 30 13:01 pi_integration_config.md
+-rw-r--r-- 1 root root     1652 Oct 30 12:44 pubspec.yaml
+drwxr-xr-x 2 root root       63 Oct 30 14:48 summarized_conversations
+drwxr-xr-x 2 root root       38 Oct 29 20:10 test
+-rw-r--r-- 1 root root     6153 Oct 30 13:04 todo.md

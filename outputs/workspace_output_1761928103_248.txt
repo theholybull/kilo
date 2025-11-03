@@ -1,0 +1,5 @@
+[viam-pixel-integration 1c429b7] Add comprehensive beginner-friendly guides
+ 3 files changed, 1740 insertions(+)
+ create mode 100644 viam_pixel_integration/COMPLETE_BEGINNER_GUIDE.md
+ create mode 100644 viam_pixel_integration/TROUBLESHOOTING_FAQ.md
+ create mode 100644 viam_pixel_integration/VISUAL_SETUP_FLOWCHART.md

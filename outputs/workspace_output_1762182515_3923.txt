@@ -1,0 +1,3 @@
+[viam-pixel-integration 2c5f9b0] Add guide for modern Gradle plugin syntax
+ 1 file changed, 260 insertions(+)
+ create mode 100644 viam_pixel_integration/FIXED_GRADLE_FILES_NEW_SYNTAX.md

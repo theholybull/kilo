@@ -1,0 +1,101 @@
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-52-37.923.html">
+              <td>14:52:37 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:52:37 30 Oct</td>
+              <td>117 ms</td>
+              <td>15 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>426</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>2</td>
+              <td>partial</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-49-30.297.html">
+              <td>14:49:30 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:49:30 30 Oct</td>
+              <td>245 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>426</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>1</td>
+              <td>partial</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-48-51.719.html">
+              <td>14:48:51 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:48:51 30 Oct</td>
+              <td>97 ms</td>
+              <td>2 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>0</td>
+              <td>partial on project open</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-32-50.777.html">
+              <td>14:32:50 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:32:50 30 Oct</td>
+              <td>79 ms</td>
+              <td>1 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>426</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>13</td>
+              <td>partial</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-17-10.712.html">
+              <td>14:17:10 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:17:10 30 Oct</td>
+              <td>9 ms</td>
+              <td>5 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>12</td>
+              <td>partial</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-17-10.673.html">
+              <td>14:17:10 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:17:10 30 Oct</td>
+              <td>15 ms</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="not-applicable-data">N/A</td>
+              <td class="not-applicable-data">N/A</td>
+              <td>11</td>
+              <td>partial</td>
+            </tr>
+            <tr class="linkable-table-row scanning-table-row" href="diagnostic-2025-10-30-14-15-44.019.html">
+              <td>14:15:43 30 Oct</td>
+              <td class="not-applicable-data">Didn't start</td>
+              <td>14:15:44 30 Oct</td>
+              <td>24 ms</td>

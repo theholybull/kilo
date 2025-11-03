@@ -1,0 +1,11 @@
+                    ...cameraProvider.cameras.map((camera) => Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            camera.lensDirection == CameraLensDirection.front 
+                              ? Icons.camera_front 
+                              : Icons.camera_rear,
+                            size: 16,
+                            color: camera.lensDirection == cameraProvider.currentLensDirection 
+                              ? Colors.blue 

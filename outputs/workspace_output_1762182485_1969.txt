@@ -1,0 +1,2 @@
+[viam-pixel-integration 22b7320] Fix Gradle files with modern plugin syntax
+ 3 files changed, 30 insertions(+), 34 deletions(-)

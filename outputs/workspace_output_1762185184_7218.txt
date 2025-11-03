@@ -1,0 +1,5 @@
+[viam-pixel-integration f6bc36e] Add pubspec.yaml fix guide
+ 1 file changed, 224 insertions(+)
+ create mode 100644 viam_pixel_integration/FIXED_PUBSPEC_YAML.md
+To https://github.com/theholybull/kilo.git
+   e7b0769..f6bc36e  viam-pixel-integration -> viam-pixel-integration

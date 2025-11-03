@@ -1,0 +1,10 @@
+      _logger.i('Starting recording to: $_currentRecordingPath');
+      
+      // Start recording
+      await _recorder.start(
+        const RecordConfig(
+          encoder: AudioEncoder.aacLc,
+          sampleRate: _sampleRate,
+          bitRate: _bitRate,
+          numChannels: _channels,
+        ),

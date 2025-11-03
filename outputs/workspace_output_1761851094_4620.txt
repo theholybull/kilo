@@ -1,0 +1,3 @@
+[viam-pixel-integration 7bf01a3] Fix package namespace error - Move to build.gradle
+ 3 files changed, 141 insertions(+), 19 deletions(-)
+ create mode 100644 viam_pixel_integration/PACKAGE_NAMESPACE_FIX.md

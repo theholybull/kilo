@@ -1,0 +1,3 @@
+[viam-pixel-integration 59c1909] Add guide to fix main.dart errors
+ 1 file changed, 261 insertions(+)
+ create mode 100644 viam_pixel_integration/FIXED_MAIN_DART.md

@@ -1,0 +1,1 @@
+fatal: pathspec 'viam_pixel_integration/FIX_LOCAL_PUBSPEC.md' did not match any files
