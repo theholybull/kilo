@@ -1,88 +1,49 @@
-name: viam_pixel4a_sensors
-description: Flutter app for Viam to access Pixel 4a sensors, speakers, mics and display
+name: viam_pixel_integration
+description: Viam Pixel 4a sensor integration app
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   
-  # Viam SDK for robot communication
-  viam_sdk: ^0.11.0
+  # UI
+  cupertino_icons: ^1.0.2
   
-  # USB connection and networking
-  usb_serial: ^0.4.0
+  # State Management
+  provider: ^6.0.5
   
-  # Background services and boot-on-startup
-  android_intent_plus: ^4.0.3
-  flutter_background_service: ^5.0.10
+  # Permissions
+  permission_handler: ^10.4.3
   
-  # Face detection and recognition
-  google_ml_kit: ^0.18.0
+  # Camera & Vision
+  camera: ^0.10.5+2
+  google_ml_kit: ^0.14.0
+  image: ^4.0.17
   
-  # Network discovery and local connection
-  network_info_plus: ^4.0.2
-  mdns_plugin: ^0.0.2
+  # Audio
+  flutter_sound: ^9.2.13
   
-  # Permission handling
-  permission_handler: ^11.0.1
-  
-  # Sensor access
+  # Sensors
   sensors_plus: ^4.0.2
   
-  # Audio recording and playback
-  record: ^5.0.4
-  just_audio: ^0.9.36
-  audio_session: ^0.1.16
-  
-  # Camera access
-  camera: ^0.10.5+5
-  video_player: ^2.8.1
-  
-  # Screen capture
-  screen_capture_plus: ^0.0.2
-  
-  # Device info and battery
-  device_info_plus: ^9.1.1
-  battery_plus: ^5.0.2
-  
-  # Network connectivity
-  connectivity_plus: ^5.0.2
+  # Network & Connectivity
+  http: ^1.1.0
   network_info_plus: ^4.0.2
   
-  # Location services
-  geolocator: ^10.1.0
+  # USB
+  usb_serial: ^0.4.0
   
-  # File handling for logs and data
-  path_provider: ^2.1.1
-  path: ^1.8.3
-  
-  # State management
-  provider: ^6.1.1
-  
-  # HTTP requests for debugging
-  http: ^1.1.0
-  
-  # JSON serialization
-  json_annotation: ^4.8.1
-  
-  # Logging
-  logger: ^2.0.2+1
+  # Viam SDK
+  viam: ^0.71.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
-  json_serializable: ^6.7.1
-  build_runner: ^2.4.7
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
-  
-  assets:
-    - assets/images/
-    - assets/icons/
