@@ -1,2 +1,0 @@
-To https://github.com/theholybull/kilo.git
-   02392c5..9714cc0  kilo_phone_fixed -> kilo_phone_fixed

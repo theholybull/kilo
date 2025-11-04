@@ -1,7 +1,0 @@
-    
-    try {
-      // Initialize audio session
-      final session = await AudioSession.instance;
-      await session.configure(const AudioSessionConfiguration.speech());
-      
-      // Check microphone availability

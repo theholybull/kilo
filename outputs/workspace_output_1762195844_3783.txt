@@ -1,7 +1,0 @@
-                  borderRadius: BorderRadius.circular(8),
-                  child: AspectRatio(
-                    aspectRatio: cameraProvider.currentCameraController!.value.aspectRatio,
-                    child: CameraPreview(cameraProvider.currentCameraController!),
-                  ),
-                ),
-              )

@@ -1,6 +1,0 @@
-remote: 
-remote: Create a pull request for 'viam-pixel-integration' on GitHub by visiting:        
-remote:      https://github.com/theholybull/kilo/pull/new/viam-pixel-integration        
-remote: 
-To https://github.com/theholybull/kilo.git
- * [new branch]      viam-pixel-integration -> viam-pixel-integration

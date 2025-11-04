@@ -1,4 +1,0 @@
-[viam-pixel-integration ff13c10] Add Android plugin error fix guides
- 2 files changed, 767 insertions(+)
- create mode 100644 viam_pixel_integration/FIXED_BUILD_GRADLE_FILES.md
- create mode 100644 viam_pixel_integration/FIX_ANDROID_PLUGIN_ERROR.md

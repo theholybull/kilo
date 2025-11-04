@@ -1,2 +1,0 @@
-To https://github.com/theholybull/kilo.git
-   22b7320..2c5f9b0  viam-pixel-integration -> viam-pixel-integration

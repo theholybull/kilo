@@ -1,7 +1,0 @@
-[viam-pixel-integration 5512e90] Add complete Android project structure
- 5 files changed, 58 insertions(+)
- create mode 100644 viam_pixel_integration/android/build.gradle
- create mode 100644 viam_pixel_integration/android/gradle.properties
- create mode 100644 viam_pixel_integration/android/gradle/wrapper/gradle-wrapper.jar
- create mode 100644 viam_pixel_integration/android/gradle/wrapper/gradle-wrapper.properties
- create mode 100644 viam_pixel_integration/android/settings.gradle

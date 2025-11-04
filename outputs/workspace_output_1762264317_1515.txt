@@ -1,4 +1,0 @@
-lib/providers/audio_provider.dart:6:import 'dart:io';
-lib/providers/camera_provider.dart:5:import 'dart:io';
-lib/providers/face_detection_provider.dart:8:import 'dart:io';
-lib/providers/pi_connection_provider.dart:6:import 'dart:io';

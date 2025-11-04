@@ -90,3 +90,8 @@ app.*.map.json
 # Workspace specific
 summarized_conversations/
 todo.md
+outputs/
+*.png
+*.tar.gz
+docs/*.md
+!docs/README.md

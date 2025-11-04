@@ -1,8 +1,0 @@
-  292 lib/providers/audio_provider.dart
-  338 lib/providers/camera_provider.dart
-  312 lib/providers/emotion_display_provider.dart
-  374 lib/providers/face_detection_provider.dart
-  317 lib/providers/pi_connection_provider.dart
-  331 lib/providers/sensor_provider.dart
-  420 lib/providers/viam_provider.dart
- 2384 total

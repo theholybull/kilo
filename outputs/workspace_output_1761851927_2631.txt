@@ -1,1 +1,0 @@
-    <title>Indexing diagnostics of 'viam_pixel_integration'</title>
