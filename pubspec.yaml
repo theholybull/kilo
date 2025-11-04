@@ -26,7 +26,7 @@ dependencies:
   
   # Network discovery and local connection
   network_info_plus: ^4.0.2
-  mdns_plugin: ^0.0.2
+  multicast_dns: ^0.3.2+6
   
   # Permission handling
   permission_handler: ^11.0.1
