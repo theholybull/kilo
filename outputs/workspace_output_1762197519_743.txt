@@ -1,0 +1,7 @@
+remote: 
+remote: Create a pull request for 'kilo_phone_fixed' on GitHub by visiting:        
+remote:      https://github.com/theholybull/kilo/pull/new/kilo_phone_fixed        
+remote: 
+To https://github.com/theholybull/kilo.git
+ * [new branch]      kilo_phone_fixed -> kilo_phone_fixed
+branch 'kilo_phone_fixed' set up to track 'origin/kilo_phone_fixed'.

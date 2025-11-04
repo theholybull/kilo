@@ -1,0 +1,50 @@
+  // Initialize permission service
+  await PermissionService.initialize();
+  
+  // Initialize background service handlers
+  BackgroundService.initializeServiceHandlers(
+    onUsbAttached: (data) {
+      print('USB device attached: ${data['device_name']}');
+      // Will be handled by providers
+    },
+    onUsbDetached: (data) {
+      print('USB device detached: ${data['device_name']}');
+      // Will be handled by providers
+    },
+    onAutoStart: (data) {
+      print('Auto-start triggered at: ${DateTime.fromMillisecondsSinceEpoch(data['timestamp'])}');
+      // Will be handled by providers
+    },
+  );
+  
+  runApp(const ViamPixel4aApp());
+}
+
+class ViamPixel4aApp extends StatelessWidget {
+  const ViamPixel4aApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SensorProvider()),
+        ChangeNotifierProvider(create: (_) => AudioProvider()),
+        ChangeNotifierProvider(create: (_) => CameraProvider()),
+        ChangeNotifierProvider(create: (_) => ViamProvider()),
+        ChangeNotifierProvider(create: (_) => PiConnectionProvider()),
+        ChangeNotifierProvider(create: (_) => EmotionDisplayProvider()),
+        ChangeNotifierProvider(create: (_) => FaceDetectionProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Viam Pi Integration',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          useMaterial3: true,
+          brightness: Brightness.dark,
+        ),
+        home: const HomeScreen(),
+        debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+}

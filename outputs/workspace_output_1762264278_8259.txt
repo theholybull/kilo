@@ -1,0 +1,2 @@
+lib/providers/camera_provider.dart:7:import 'dart:ui' show Offset;
+lib/providers/face_detection_provider.dart:6:import 'dart:ui' show Rect, Offset;

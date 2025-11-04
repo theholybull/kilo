@@ -1,0 +1,3 @@
+lib/providers/audio_provider.dart:8:import 'dart:math';
+lib/providers/emotion_display_provider.dart:4:import 'dart:math';
+lib/providers/face_detection_provider.dart:7:import 'dart:math' show Point;
