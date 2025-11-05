@@ -244,7 +244,7 @@ class SensorProvider extends ChangeNotifier {
     _accelerometerSubscription?.cancel();
     _gyroscopeSubscription?.cancel();
     _magnetometerSubscription?.cancel();
-    _barometerSubscription?.cancel();
+    // Barometer not available: _barometerSubscription?.cancel();
     
     notifyListeners();
   }
