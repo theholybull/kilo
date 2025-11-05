@@ -163,7 +163,8 @@ class SensorProvider extends ChangeNotifier {
   Future<void> _getConnectivityStatus() async {
     try {
       final connectivity = Connectivity();
-      _connectivityStatus = await connectivity.checkConnectivity();
+      final results = await connectivity.checkConnectivity();
+      _connectivityStatus = results.isNotEmpty ? [results.first] : [];
       
       _logger.i('Connectivity status: $_connectivityStatus');
       notifyListeners();
