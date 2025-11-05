@@ -37,7 +37,7 @@ class AudioProvider extends ChangeNotifier {
   Duration get recordingDuration => _recordingDuration;
   Duration get playbackPosition => _playbackPosition;
   Duration get totalDuration => _totalDuration;
-  double get recordingLevel => _recorder.isRecording ? 0.0 : 0.0;
+  double get recordingLevel => _isRecording ? 0.0 : 0.0;
   
   Future<void> initialize() async {
     _logger.i('Initializing audio provider...');

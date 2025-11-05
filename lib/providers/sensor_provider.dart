@@ -28,7 +28,8 @@ class SensorProvider extends ChangeNotifier {
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;
   StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
-  StreamSubscription<BarometerEvent>? _barometerSubscription;
+  // Barometer not available in current sensors_plus version
+  // StreamSubscription<BarometerEvent>? _barometerSubscription;
   
   // Sensor data storage
   SensorData? _accelerometerData;
@@ -220,7 +221,7 @@ class SensorProvider extends ChangeNotifier {
     });
     
     // Start barometer monitoring
-    _barometerSubscription = barometerEvents.listen((event) {
+    // Barometer not available: _barometerSubscription = barometerEvents.listen((event) {
       _barometerData = SensorData(
         timestamp: DateTime.now(),
         values: {

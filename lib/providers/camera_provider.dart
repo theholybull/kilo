@@ -244,6 +244,9 @@ class CameraProvider extends ChangeNotifier {
       case FlashMode.off:
         newMode = FlashMode.auto;
         break;
+      case FlashMode.torch:
+        newMode = FlashMode.auto;
+        break;
     }
     
     await setFlashMode(newMode);

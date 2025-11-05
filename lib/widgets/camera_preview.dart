@@ -231,15 +231,15 @@ class CameraPreview extends StatelessWidget {
     );
   }
   
-  IconData _getFlashIcon(FlashMode mode) {
+  IconData _getFlashIcon(camera_pkg.FlashMode mode) {
     switch (mode) {
-      case FlashMode.auto:
+      case camera_pkg.FlashMode.auto:
         return Icons.flash_auto;
-      case FlashMode.always:
+      case camera_pkg.FlashMode.always:
         return Icons.flash_on;
-      case FlashMode.off:
+      case camera_pkg.FlashMode.off:
         return Icons.flash_off;
-      case FlashMode.torch:
+      case camera_pkg.FlashMode.torch:
         return Icons.flashlight_on;
     }
   }

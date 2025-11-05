@@ -56,7 +56,7 @@ class DetectedFace {
 class FaceDetectionProvider extends ChangeNotifier {
   final Logger _logger = Logger();
   
-  final FaceDetector _faceDetector = FaceDetector(
+  FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
       enableClassification: true,
       enableLandmarks: true,
