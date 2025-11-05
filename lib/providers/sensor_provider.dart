@@ -222,15 +222,15 @@ class SensorProvider extends ChangeNotifier {
     
     // Start barometer monitoring
     // Barometer not available: _barometerSubscription = barometerEvents.listen((event) {
-      _barometerData = SensorData(
-        timestamp: DateTime.now(),
-        values: {
-          'pressure': event.pressure,
-        },
-      );
-      _barometerController.add(_barometerData!);
-      notifyListeners();
-    });
+      // _barometerData = SensorData(
+      //   timestamp: DateTime.now(),
+      //   values: {
+      //     'pressure': event.pressure,
+      //   },
+      // );
+      // _barometerController.add(_barometerData!);
+      // notifyListeners();
+      // });
     
     notifyListeners();
   }
