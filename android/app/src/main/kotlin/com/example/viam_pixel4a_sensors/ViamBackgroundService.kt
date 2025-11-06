@@ -133,7 +133,9 @@ class ViamBackgroundService : Service() {
                 DartExecutor.DartEntrypoint.createDefault()
             )
             
-            methodChannel = MethodChannel(flutterEngine!.dartExecutor.binaryMessenger, "viam_background_service")
+            flutterEngine?.let { engine ->
+                   methodChannel = MethodChannel(engine.dartExecutor.binaryMessenger, "viam_background_service")
+               }
             methodChannel?.setMethodCallHandler { call, result ->
                 when (call.method) {
                     "updateNotification" -> {
