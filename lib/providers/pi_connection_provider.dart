@@ -74,8 +74,9 @@ class PiConnectionProvider extends ChangeNotifier {
       
       // Try common Pi addresses on USB network
       final possibleAddresses = [
-        '10.10.10.1',
+        '192.168.42.116', // Your actual Pi IP
         '10.10.10.67', // From your Pi info
+        '10.10.10.1',
         '192.168.42.1', // Common USB tethering
         '192.168.0.1',
       ];
