@@ -14,7 +14,6 @@ import androidx.core.app.NotificationCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel
 
 class ViamBackgroundService : Service() {
     private var flutterEngine: FlutterEngine? = null
