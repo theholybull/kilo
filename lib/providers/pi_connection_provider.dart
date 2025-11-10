@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -314,3 +315,33 @@ class PiConnectionProvider extends ChangeNotifier {
     super.dispose();
   }
 }
+    Future<void> _loadConfiguration() async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        _piAddress = prefs.getString("pi_ip_address") ?? "10.10.10.67";
+        _autoConnect = prefs.getBool("auto_connect") ?? true;
+        _logger.i("Loaded configuration: Pi IP: $_piAddress, Auto-connect: $_autoConnect");
+      } catch (e) {
+        _logger.e("Error loading configuration: $e");
+        // Use defaults if loading fails
+        _piAddress = "10.10.10.67";
+        _autoConnect = true;
+      }
+    }
+
+    Future<void> saveConfiguration(String piAddress, bool autoConnect) async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("pi_ip_address", piAddress);
+        await prefs.setBool("auto_connect", autoConnect);
+        
+        _piAddress = piAddress;
+        _autoConnect = autoConnect;
+        
+        _logger.i("Saved configuration: Pi IP: $piAddress, Auto-connect: $autoConnect");
+        notifyListeners();
+      } catch (e) {
+        _logger.e("Error saving configuration: $e");
+      }
+    }
+

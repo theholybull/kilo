@@ -15,6 +15,7 @@ import '../widgets/device_info_card.dart';
 import '../widgets/pi_connection_widget.dart';
 import '../widgets/emotion_display.dart';
 import '../widgets/face_detection_controls.dart';
+import 'network_config_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -74,6 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Colors.grey,
                 ),
                 onPressed: () => _showViamConnectionDialog(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_ethernet),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const NetworkConfigScreen(),
+                ),
+              ),
               );
             },
           ),
@@ -255,6 +264,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showViamConnectionDialog(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_ethernet),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const NetworkConfigScreen(),
+                ),
+              ),
         child: const Icon(Icons.settings),
       ),
     );

@@ -28,6 +28,9 @@ dependencies:
   network_info_plus: ^4.0.2
   multicast_dns: ^0.3.2+6
   
+
+    # Persistent storage
+    shared_preferences: ^2.2.3
   # Permission handling
   permission_handler: ^11.0.1
   

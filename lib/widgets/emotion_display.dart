@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/emotion_display_provider.dart';
+import '../screens/full_screen_eyes.dart';
 
 class EmotionDisplay extends StatelessWidget {
   const EmotionDisplay({super.key});
@@ -27,33 +28,65 @@ class EmotionDisplay extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 
-                // Eye display
+                // Eye display with full screen button
                 Container(
-                  height: 120,
+                  height: 140,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Stack(
                     children: [
-                      // Left eye
-                      _buildEye(
-                        x: -emotionProvider.eyeX,
-                        y: emotionProvider.eyeY,
-                        openness: emotionProvider.eyeOpenness,
-                        pupilSize: emotionProvider.pupilSize,
-                        emotion: emotionProvider.currentEmotion,
+                      // Eyes
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Left eye - Cars movie style
+                            _buildCarsEye(
+                              x: emotionProvider.eyeX,
+                              y: emotionProvider.eyeY,
+                              openness: emotionProvider.eyeOpenness,
+                              pupilSize: emotionProvider.pupilSize,
+                              emotion: emotionProvider.currentEmotion,
+                            ),
+                            
+                            // Right eye - Cars movie style
+                            _buildCarsEye(
+                              x: emotionProvider.eyeX,
+                              y: emotionProvider.eyeY,
+                              openness: emotionProvider.eyeOpenness,
+                              pupilSize: emotionProvider.pupilSize,
+                              emotion: emotionProvider.currentEmotion,
+                            ),
+                          ],
+                        ),
                       ),
                       
-                      // Right eye
-                      _buildEye(
-                        x: emotionProvider.eyeX,
-                        y: emotionProvider.eyeY,
-                        openness: emotionProvider.eyeOpenness,
-                        pupilSize: emotionProvider.pupilSize,
-                        emotion: emotionProvider.currentEmotion,
+                      // Full screen button
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const FullScreenEyesScreen(),
+                            ),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.fullscreen,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

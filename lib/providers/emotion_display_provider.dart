@@ -123,9 +123,12 @@ class EmotionDisplayProvider extends ChangeNotifier {
   void setSteeringAngle(double angle) {
     _steeringAngle = angle.clamp(-45.0, 45.0);
     
-    // Move eyes in direction of steering
+    // Move eyes in direction of steering (both eyes same direction)
     double eyeOffset = angle / 45.0; // Convert to -1 to 1 range
-    setEyePosition(eyeOffset, _eyeY);
+    _eyeX = eyeOffset.clamp(-1.0, 1.0);
+    
+    // Adjust pupil position based on eye position
+    _pupilSize = 0.3 + (1.0 - (_eyeX.abs() + _eyeY.abs()) / 2.0) * 0.2;
     
     notifyListeners();
   }
