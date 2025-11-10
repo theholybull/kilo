@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Colors.grey,
                 ),
                 onPressed: () => _showViamConnectionDialog(context),
-            ),
+            
             IconButton(
               icon: const Icon(Icons.settings_ethernet),
               onPressed: () => Navigator.of(context).push(
@@ -263,15 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showViamConnectionDialog(context),
-            ),
-            IconButton(
-              icon: const Icon(Icons.settings_ethernet),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const NetworkConfigScreen(),
-                ),
-              ),
+        child: const Icon(Icons.settings),
         child: const Icon(Icons.settings),
       ),
     );

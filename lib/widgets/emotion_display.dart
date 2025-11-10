@@ -44,7 +44,7 @@ class EmotionDisplay extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             // Left eye - Cars movie style
-                            _buildCarsEye(
+                            _buildEye(
                               x: emotionProvider.eyeX,
                               y: emotionProvider.eyeY,
                               openness: emotionProvider.eyeOpenness,
@@ -53,7 +53,7 @@ class EmotionDisplay extends StatelessWidget {
                             ),
                             
                             // Right eye - Cars movie style
-                            _buildCarsEye(
+                            _buildEye(
                               x: emotionProvider.eyeX,
                               y: emotionProvider.eyeY,
                               openness: emotionProvider.eyeOpenness,

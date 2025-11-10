@@ -196,7 +196,7 @@ class _FullScreenEyesScreenState extends State<FullScreenEyesScreen> {
                                 Row(
                                   children: [
                                     const Icon(
-                                      Icons.steer,
+                                      Icons.navigation,
                                       color: Colors.white,
                                     ),
                                     const SizedBox(width: 12),
@@ -204,9 +204,9 @@ class _FullScreenEyesScreenState extends State<FullScreenEyesScreen> {
                                       child: SliderTheme(
                                         data: SliderTheme.of(context).copyWith(
                                           activeTrackColor: Colors.orange,
-                                          inactiveTrackColor: Colors.orange24,
+                                          inactiveTrackColor: Colors.orange.withOpacity(0.24),
                                           thumbColor: Colors.orange,
-                                          overlayColor: Colors.orange24,
+                                          overlayColor: Colors.orange.withOpacity(0.24),
                                         ),
                                         child: Slider(
                                           value: emotionProvider.steeringAngle,
