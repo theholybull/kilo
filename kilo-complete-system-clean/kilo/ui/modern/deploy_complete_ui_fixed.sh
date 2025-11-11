@@ -337,8 +337,8 @@ with open('$CONFIG_FILE', 'r') as f:
 enabled = config.get('remote_access_enabled', False)
 status = 'ENABLED' if enabled else 'DISABLED'
 print(f'Remote access: {status}')
-print(f'UI Port: {config.get(&quot;ui_port&quot;, 8080)}')
-print(f'WebSocket Port: {config.get(&quot;websocket_port&quot;, 8081)}')
+print(f\"UI Port: {config.get('ui_port', 8080)}\")
+print(f\"WebSocket Port: {config.get('websocket_port', 8081)}\")
 "
     deactivate
 }
@@ -352,7 +352,7 @@ esac
 EOF
 
 # Make all utility scripts executable
-chmod +x "$INSTALL_DIR/bin/kilo-*
+chmod +x "$INSTALL_DIR/bin/kilo-"*
 
 # Add to PATH for easier access
 echo 'export PATH="/opt/kilo/bin:$PATH"' >> /etc/bash.bashrc
