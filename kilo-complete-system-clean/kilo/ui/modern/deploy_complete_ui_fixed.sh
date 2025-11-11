@@ -101,7 +101,7 @@ pip install \
     websockets \
     asyncio \
     requests \
-    chart.js \
+    flask-socketio \
     flask \
     aiohttp
 deactivate
