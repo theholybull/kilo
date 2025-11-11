@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kilo Truck Enhanced Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --border: #e5e7eb;
+        }
+        
+        .status-online { color: var(--success); }
+        .status-offline { color: var(--danger); }
+        .status-warning { color: var(--warning); }
+        
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .connection-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        
+        .connected { background-color: var(--success); }
+        .disconnected { background-color: var(--danger); }
+        .connecting { background-color: var(--warning); }
+        
+        .imu-visualization {
+            background: linear-gradient(145deg, #1e293b, #334155);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .eyes-display {
+            width: 120px;
+            height: 60px;
+            background: #1f2937;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            border: 3px solid #4b5563;
+        }
+        
+        .eye {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .eye.left { left: 15px; }
+        .eye.right { right: 15px; }
+        
+        .pupil {
+            width: 20px;
+            height: 20px;
+            background: #1f2937;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .console-output {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            background: #1f2937;
+            color: #f3f4f6;
+            border-radius: 6px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gray-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold flex items-center">
+                        <span class="connection-indicator" id="ws-status"></span>
+                        Kilo Truck Enhanced Control Panel
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm" id="connection-status">Connecting...</span>
+                    <button onclick="toggleFullscreen()" class="p-2 rounded hover:bg-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Status Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="metric-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">System</p>
+                        <p class="text-2xl font-bold" id="system-status">Loading...</p>
+                    </div>
+                    <div class="text-3xl">🤖</div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Phone</p>
+                        <p class="text-2xl font-bold" id="phone-status">Offline</p>
+                    </div>
+                    <div class="text-3xl">📱</div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Faces</p>
+                        <p class="text-2xl font-bold" id="faces-count">0</p>
+                    </div>
+                    <div class="text-3xl">👤</div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">CPU Load</p>
+                        <p class="text-2xl font-bold" id="cpu-load">0.0</p>
+                    </div>
+                    <div class="text-3xl">⚡</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Controls -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Android Controls -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        📱 Android Controls
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone IP</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="phone-ip" class="flex-1 px-3 py-2 border border-gray-300 rounded-md" value="10.10.10.1">
+                                <button onclick="discoverPhone()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Discover</button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Eyes Control</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="sendEyes('emotion', 'happy')" class="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">😊 Happy</button>
+                                <button onclick="sendEyes('emotion', 'sad')" class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">😢 Sad</button>
+                                <button onclick="sendEyes('emotion', 'angry')" class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">😠 Angry</button>
+                                <button onclick="sendEyes('steering', 'left')" class="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm">⬅️ Left</button>
+                                <button onclick="sendEyes('steering', 'center')" class="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm">⬆️ Center</button>
+                                <button onclick="sendEyes('steering', 'right')" class="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm">➡️ Right</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Eyes Display -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Eyes Preview</label>
+                            <div class="eyes-display">
+                                <div class="eye left">
+                                    <div class="pupil" id="left-pupil"></div>
+                                </div>
+                                <div class="eye right">
+                                    <div class="pupil" id="right-pupil"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personality Controls -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        🎭 Personality
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Snark Level: <span id="snark-value">2</span></label>
+                            <input type="range" id="snark-level" min="0" max="5" value="2" class="w-full" onchange="updateSnarkLevel()">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Wake Words</label>
+                            <input type="text" id="wake-words" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="kilo, hey kilo">
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button onclick="personalityAction('start')" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Start</button>
+                            <button onclick="personalityAction('restart')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Restart</button>
+                            <button onclick="personalityAction('stop')" class="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Stop</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column - Visualizations -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- IMU Visualization -->
+                <div class="imu-visualization">
+                    <h3 class="text-lg font-semibold mb-4">📊 IMU Data</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-gray-300 mb-2">Accelerometer (m/s²)</p>
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div>
+                                    <p class="text-xs text-gray-400">X</p>
+                                    <p class="text-lg font-mono" id="acc-x">0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Y</p>
+                                    <p class="text-lg font-mono" id="acc-y">0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Z</p>
+                                    <p class="text-lg font-mono" id="acc-z">0.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm text-gray-300 mb-2">Gyroscope (rad/s)</p>
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div>
+                                    <p class="text-xs text-gray-400">X</p>
+                                    <p class="text-lg font-mono" id="gyro-x">0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Y</p>
+                                    <p class="text-lg font-mono" id="gyro-y">0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Z</p>
+                                    <p class="text-lg font-mono" id="gyro-z">0.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <canvas id="imu-chart" width="300" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Status -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        🌐 Network Status
+                    </h3>
+                    
+                    <div id="network-status-list" class="space-y-2">
+                        <!-- Network interfaces will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - System & Console -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Viam Controls -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        ⚙️ Viam Control
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="viamAction('status')" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Status</button>
+                            <button onclick="viamAction('restart')" class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">Restart</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="wanderAction('start')" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">▶️ Wander</button>
+                            <button onclick="wanderAction('stop')" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">⏹️ Stop</button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Save Map</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="map-tag" class="flex-1 px-3 py-2 border border-gray-300 rounded-md" placeholder="map-name">
+                                <button onclick="saveMap()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">💾</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Console Output -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold flex items-center">
+                            📋 Console Output
+                        </h3>
+                        <button onclick="clearConsole()" class="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700">Clear</button>
+                    </div>
+                    
+                    <div id="console-output" class="console-output">
+                        System ready...\n
+                    </div>
+                </div>
+
+                <!-- Services Status -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        🔧 Services Status
+                    </h3>
+                    
+                    <div id="services-status" class="space-y-2">
+                        <!-- Services will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-y-20 transition-all duration-300 z-50">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // WebSocket connection
+        let ws = null;
+        let reconnectInterval = null;
+        let imuChart = null;
+        let imuData = {
+            labels: [],
+            accX: [],
+            accY: [],
+            accZ: []
+        };
+
+        // Initialize WebSocket connection
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.hostname}:8081`;
+            
+            updateConnectionStatus('connecting', 'Connecting...');
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('WebSocket connected');
+                updateConnectionStatus('connected', 'Connected');
+                showToast('Real-time connection established', 'success');
+                
+                if (reconnectInterval) {
+                    clearInterval(reconnectInterval);
+                    reconnectInterval = null;
+                }
+            };
+            
+            ws.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                } catch (e) {
+                    console.error('Error parsing WebSocket message:', e);
+                }
+            };
+            
+            ws.onclose = function() {
+                console.log('WebSocket disconnected');
+                updateConnectionStatus('disconnected', 'Disconnected');
+                
+                if (!reconnectInterval) {
+                    reconnectInterval = setInterval(connectWebSocket, 5000);
+                }
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                updateConnectionStatus('disconnected', 'Connection Error');
+            };
+        }
+
+        // Handle WebSocket messages
+        function handleWebSocketMessage(data) {
+            switch (data.type) {
+                case 'initial_status':
+                case 'system_status':
+                    updateSystemStatus(data.data);
+                    break;
+                case 'imu_data':
+                    updateIMUData(data.data);
+                    break;
+                case 'faces_detected':
+                    updateFacesData(data.data);
+                    break;
+                case 'phone_health':
+                    updatePhoneHealth(data.data);
+                    break;
+                case 'eyes_response':
+                    handleEyesResponse(data.data);
+                    break;
+                case 'config_updated':
+                    handleConfigUpdated(data.data);
+                    break;
+                case 'phone_discovered':
+                    handlePhoneDiscovered(data.data);
+                    break;
+                case 'error':
+                    showToast(data.data.message, 'error');
+                    break;
+            }
+        }
+
+        // Update functions
+        function updateSystemStatus(status) {
+            // Update metric cards
+            const systemStatus = Object.values(status.services || {}).every(s => s === 'active') ? 'Online' : 'Warning';
+            document.getElementById('system-status').textContent = systemStatus;
+            
+            if (status.system) {
+                document.getElementById('cpu-load').textContent = status.system.cpu_load || '0.0';
+            }
+            
+            // Update services
+            updateServicesStatus(status.services || {});
+            
+            // Update network
+            updateNetworkStatus(status.network || {});
+            
+            // Update Viam status
+            if (status.viam) {
+                const viamClass = status.viam.listening ? 'status-online' : 'status-offline';
+                // Update Viam status display if needed
+            }
+        }
+
+        function updateIMUData(data) {
+            if (!data) return;
+            
+            // Update numeric displays
+            document.getElementById('acc-x').textContent = (data.ax || 0).toFixed(2);
+            document.getElementById('acc-y').textContent = (data.ay || 0).toFixed(2);
+            document.getElementById('acc-z').textContent = (data.az || 0).toFixed(2);
+            document.getElementById('gyro-x').textContent = (data.gx || 0).toFixed(2);
+            document.getElementById('gyro-y').textContent = (data.gy || 0).toFixed(2);
+            document.getElementById('gyro-z').textContent = (data.gz || 0).toFixed(2);
+            
+            // Update chart
+            updateIMUChart(data);
+        }
+
+        function updateFacesData(data) {
+            const count = data.faces ? data.faces.length : 0;
+            document.getElementById('faces-count').textContent = count;
+            
+            if (count > 0) {
+                console.log(`Faces detected: ${JSON.stringify(data.faces)}`);
+            }
+        }
+
+        function updatePhoneHealth(data) {
+            const statusText = data.connected ? 'Online' : 'Offline';
+            document.getElementById('phone-status').textContent = statusText;
+            
+            if (data.connected) {
+                document.getElementById('phone-ip').value = data.ip;
+            }
+        }
+
+        function updateServicesStatus(services) {
+            const container = document.getElementById('services-status');
+            container.innerHTML = '';
+            
+            Object.entries(services).forEach(([name, status]) => {
+                const statusClass = status === 'active' ? 'status-online' : 'status-offline';
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center';
+                div.innerHTML = `
+                    <span class="text-sm font-medium">${name}</span>
+                    <span class="${statusClass} font-mono text-sm">${status}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateNetworkStatus(network) {
+            const container = document.getElementById('network-status-list');
+            container.innerHTML = '';
+            
+            Object.entries(network).forEach(([iface, info]) => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-2 bg-gray-50 rounded';
+                div.innerHTML = `
+                    <span class="text-sm font-medium">${iface}</span>
+                    <span class="font-mono text-sm">${info.ip}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Chart management
+        function initIMUChart() {
+            const ctx = document.getElementById('imu-chart').getContext('2d');
+            imuChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Acc X',
+                            data: [],
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Acc Y',
+                            data: [],
+                            borderColor: 'rgb(54, 162, 235)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Acc Z',
+                            data: [],
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            display: false
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.9)',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateIMUChart(data) {
+            if (!imuChart) return;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            
+            // Keep only last 20 data points
+            if (imuChart.data.labels.length >= 20) {
+                imuChart.data.labels.shift();
+                imuChart.data.datasets.forEach(dataset => dataset.data.shift());
+            }
+            
+            imuChart.data.labels.push(timestamp);
+            imuChart.data.datasets[0].data.push(data.ax || 0);
+            imuChart.data.datasets[1].data.push(data.ay || 0);
+            imuChart.data.datasets[2].data.push(data.az || 0);
+            
+            imuChart.update('none');
+        }
+
+        // Control functions
+        function discoverPhone() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'discover_phone' }));
+                consoleOutput('Discovering Android phone...');
+            }
+        }
+
+        function sendEyes(emotionType, emotion) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'eyes_command',
+                    emotion_type: emotionType,
+                    emotion: emotion
+                }));
+                
+                // Update eyes preview
+                updateEyesPreview(emotionType, emotion);
+                consoleOutput(`Eyes command: ${emotionType}/${emotion}`);
+            }
+        }
+
+        function updateEyesPreview(emotionType, emotion) {
+            const leftPupil = document.getElementById('left-pupil');
+            const rightPupil = document.getElementById('right-pupil');
+            
+            if (emotionType === 'steering') {
+                switch (emotion) {
+                    case 'left':
+                        leftPupil.style.transform = 'translateX(-8px)';
+                        rightPupil.style.transform = 'translateX(-8px)';
+                        break;
+                    case 'right':
+                        leftPupil.style.transform = 'translateX(8px)';
+                        rightPupil.style.transform = 'translateX(8px)';
+                        break;
+                    case 'center':
+                    default:
+                        leftPupil.style.transform = 'translateX(0)';
+                        rightPupil.style.transform = 'translateX(0)';
+                }
+            } else {
+                // Reset to center for emotions
+                leftPupil.style.transform = 'translateX(0)';
+                rightPupil.style.transform = 'translateX(0)';
+            }
+        }
+
+        function updateSnarkLevel() {
+            const value = document.getElementById('snark-level').value;
+            document.getElementById('snark-value').textContent = value;
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'update_config',
+                    data: { snark_level: parseInt(value) }
+                }));
+            }
+        }
+
+        async function personalityAction(action) {
+            consoleOutput(`Personality ${action}...`);
+            try {
+                const response = await fetch(`/api/personality?action=${action}`);
+                const result = await response.text();
+                consoleOutput(`Personality ${action}: ${result}`);
+                showToast(`Personality ${action} completed`, 'success');
+            } catch (error) {
+                consoleOutput(`Personality ${action} failed: ${error.message}`);
+                showToast(`Personality ${action} failed`, 'error');
+            }
+        }
+
+        async function viamAction(action) {
+            consoleOutput(`Viam ${action}...`);
+            try {
+                const response = await fetch(`/api/viam/${action}`);
+                const result = await response.text();
+                consoleOutput(`Viam ${action}: ${result}`);
+                showToast(`Viam ${action} completed`, 'success');
+            } catch (error) {
+                consoleOutput(`Viam ${action} failed: ${error.message}`);
+                showToast(`Viam ${action} failed`, 'error');
+            }
+        }
+
+        async function wanderAction(action) {
+            consoleOutput(`Wander ${action}...`);
+            try {
+                const response = await fetch(`/api/wander/${action}`);
+                const result = await response.text();
+                consoleOutput(`Wander ${action}: ${result}`);
+                showToast(`Wander ${action} completed`, 'success');
+            } catch (error) {
+                consoleOutput(`Wander ${action} failed: ${error.message}`);
+                showToast(`Wander ${action} failed`, 'error');
+            }
+        }
+
+        async function saveMap() {
+            const tag = document.getElementById('map-tag').value;
+            consoleOutput(`Saving map: ${tag || 'auto'}...`);
+            try {
+                const response = await fetch(`/api/save_map?tag=${encodeURIComponent(tag)}`);
+                const result = await response.text();
+                consoleOutput(`Map saved: ${result}`);
+                showToast('Map saved successfully', 'success');
+            } catch (error) {
+                consoleOutput(`Map save failed: ${error.message}`);
+                showToast('Map save failed', 'error');
+            }
+        }
+
+        // Utility functions
+        function updateConnectionStatus(status, text) {
+            const indicator = document.getElementById('ws-status');
+            const statusText = document.getElementById('connection-status');
+            
+            indicator.className = 'connection-indicator';
+            
+            switch (status) {
+                case 'connected':
+                    indicator.classList.add('connected');
+                    break;
+                case 'connecting':
+                    indicator.classList.add('connecting');
+                    break;
+                case 'disconnected':
+                default:
+                    indicator.classList.add('disconnected');
+                    break;
+            }
+            
+            statusText.textContent = text;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.className = 'fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50';
+            
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-600', 'text-white');
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-600', 'text-white');
+                    break;
+                case 'warning':
+                    toast.classList.add('bg-orange-600', 'text-white');
+                    break;
+                default:
+                    toast.classList.add('bg-gray-800', 'text-white');
+            }
+            
+            toast.classList.remove('translate-y-20');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20');
+            }, 3000);
+        }
+
+        function consoleOutput(message) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent = `[${timestamp}] ${message}\n` + output.textContent;
+            
+            // Keep only last 50 lines
+            const lines = output.textContent.split('\n');
+            if (lines.length > 50) {
+                output.textContent = lines.slice(0, 50).join('\n');
+            }
+            
+            // Auto-scroll to top
+            output.scrollTop = 0;
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').textContent = 'Console cleared...\n';
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize WebSocket connection
+            connectWebSocket();
+            
+            // Initialize IMU chart
+            initIMUChart();
+            
+            // Load initial configuration
+            loadConfiguration();
+            
+            consoleOutput('Enhanced Kilo Truck UI initialized');
+            showToast('Enhanced UI loaded successfully', 'success');
+        });
+
+        async function loadConfiguration() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                
+                document.getElementById('snark-level').value = config.snark_level || 2;
+                document.getElementById('snark-value').textContent = config.snark_level || 2;
+                document.getElementById('wake-words').value = (config.wake_words || []).join(', ');
+                document.getElementById('phone-ip').value = config.android_phone_ip || '10.10.10.1';
+                
+            } catch (error) {
+                consoleOutput('Failed to load configuration');
+            }
+        }
+
+        // Handle response callbacks
+        function handleEyesResponse(data) {
+            if (data.success) {
+                showToast('Eyes command sent successfully', 'success');
+            } else {
+                showToast('Eyes command failed', 'error');
+            }
+        }
+
+        function handleConfigUpdated(data) {
+            consoleOutput('Configuration updated');
+            showToast('Configuration saved', 'success');
+        }
+
+        function handlePhoneDiscovered(data) {
+            if (data.ip && data.ip !== 'not found') {
+                consoleOutput(`Phone discovered at: ${data.ip}`);
+                showToast(`Phone found at ${data.ip}`, 'success');
+            } else {
+                consoleOutput('Phone discovery failed');
+                showToast('Phone not found', 'warning');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "components": [
+    {
+      "name": "pixel_imu",
+      "api": "rdk:component:movement_sensor",
+      "model": "kilo:movement_sensor:android-imu",
+      "attributes": {
+        "host": "192.168.42.129",
+        "port": "8080"
+      }
+    }
+  ],
+  "modules": [
+    {
+      "type": "local",
+      "name": "android-imu",
+      "executable_path": "/opt/kilo/modules/android-imu/android_imu"
+    }
+  ],
+  "services": [
+    {
+      "name": "navigation",
+      "api": "rdk:service:navigation",
+      "model": "rdk:builtin:builtin",
+      "attributes": {
+        "obstacle_detectors": [
+          {
+            "camera": "front_cam",
+            "vision_service": "obstacles"
+          }
+        ],
+        "store": {
+          "type": "memory"
+        },
+        "position_polling_frequency_hz": 1,
+        "movement_sensor": "pixel_imu",
+        "obstacle_polling_frequency_hz": 2,
+        "plan_deviation_m": 0.5,
+        "degs_per_sec": 20,
+        "base": "drive",
+        "meters_per_sec": 0.3
+      },
+      "depends_on": [
+        "drive",
+        "pixel_imu",
+        "front_cam",
+        "obstacles"
+      ]
+    },
+    {
+      "name": "slam",
+      "api": "rdk:service:slam",
+      "model": "viam:slam:cartographer",
+      "attributes": {
+        "movement_sensor": {
+          "data_frequency_hz": "100",
+          "name": "pixel_imu"
+        },
+        "config_params": {
+          "max_range_meters": "7",
+          "mode": "2d",
+          "min_range_meters": ".5"
+        },
+        "enable_mapping": true,
+        "use_cloud_slam": false,
+        "existing_map": "",
+        "camera": {
+          "name": "front_cam",
+          "data_frequency_hz": "5"
+        }
+      },
+      "depends_on": [
+        "front_cam"
+      ]
+    }
+  ]
+}
