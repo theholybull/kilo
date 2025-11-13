@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initializeProviders();
   }
-  
+
   Future<void> _initializeProviders() async {
     // Initialize all providers
     await Provider.of<SensorProvider>(context, listen: false).initialize();
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<EmotionDisplayProvider>(context, listen: false).initialize();
     await Provider.of<FaceDetectionProvider>(context, listen: false).initialize();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,16 +78,13 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-            
-            IconButton(
-              icon: const Icon(Icons.settings_ethernet),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const NetworkConfigScreen(),
-                ),
+          IconButton(
+            icon: const Icon(Icons.settings_ethernet),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const NetworkConfigScreen(),
               ),
-              );
-            },
+            ),
           ),
         ],
       ),
@@ -96,20 +93,24 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Device Info Card
-            const DeviceInfoCard(),
-            const SizedBox(height: 16),
-            
             // Pi Connection Status
             const PiConnectionWidget(),
+            
+            const SizedBox(height: 16),
+            
+            // Device Info Card
+            const DeviceInfoCard(),
+            
             const SizedBox(height: 16),
             
             // Emotion Display
             const EmotionDisplay(),
+            
             const SizedBox(height: 16),
             
             // Face Detection Controls
             const FaceDetectionControls(),
+            
             const SizedBox(height: 16),
             
             // Viam Connection Status (now for local Pi connection)
@@ -124,12 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           children: [
                             Icon(
-                              viamProvider.isConnected 
-                                ? Icons.cloud_done 
-                                : Icons.cloud_off,
-                              color: viamProvider.isConnected 
-                                ? Colors.green 
-                                : Colors.red,
+                              viamProvider.isConnected ? Icons.cloud_done : Icons.cloud_off,
+                              color: viamProvider.isConnected ? Colors.green : Colors.red,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -150,117 +147,114 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Error: ${viamProvider.connectionStatus.error}',
                             style: const TextStyle(color: Colors.red),
                           ),
+                        if (viamProvider.isConnected)
+                          ElevatedButton.icon(
+                            onPressed: () => _showViamConnectionDialog(context),
+                            icon: const Icon(Icons.settings),
+                            label: const Text('Settings'),
+                          ),
                       ],
                     ),
                   ),
                 );
               },
             ),
+            
             const SizedBox(height: 16),
             
-            // Sensor Controls
+            // Sensor Cards
             Consumer<SensorProvider>(
               builder: (context, sensorProvider, child) {
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Sensors',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Switch(
-                              value: sensorProvider.isMonitoring,
-                              onChanged: (value) {
-                                if (value) {
-                                  sensorProvider.startMonitoring();
-                                } else {
-                                  sensorProvider.stopMonitoring();
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const SensorCard(),
-                      ],
+                return Column(
+                  children: [
+                    SensorCard(
+                      title: 'Accelerometer',
+                      data: sensorProvider.accelerometerData,
+                      icon: Icons.speed,
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    SensorCard(
+                      title: 'Gyroscope',
+                      data: sensorProvider.gyroscopeData,
+                      icon: Icons.rotate_90_degrees_ccw,
+                    ),
+                    const SizedBox(height: 8),
+                    SensorCard(
+                      title: 'Magnetometer',
+                      data: sensorProvider.magnetometerData,
+                      icon: Icons.explore,
+                    ),
+                  ],
                 );
               },
             ),
+            
             const SizedBox(height: 16),
             
             // Audio Controls
-            Consumer<AudioProvider>(
-              builder: (context, audioProvider, child) {
-                return const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Audio',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        AudioControls(),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            const AudioControls(),
+            
             const SizedBox(height: 16),
             
             // Camera Preview
-            Consumer<CameraProvider>(
-              builder: (context, cameraProvider, child) {
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Camera',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        const CameraPreview(),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            const CameraPreview(),
+            
             const SizedBox(height: 16),
             
-            // Control Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _testAllComponents(context),
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Test All'),
-                  ),
+            // Additional Controls
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Robot Controls',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _testAllSensors(),
+                            icon: const Icon(Icons.sensors),
+                            label: const Text('Test Sensors'),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _testAudio(),
+                            icon: const Icon(Icons.mic),
+                            label: const Text('Test Audio'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _testCamera(),
+                            icon: const Icon(Icons.camera_alt),
+                            label: const Text('Test Camera'),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _showLogs(context),
+                            icon: const Icon(Icons.list_alt),
+                            label: const Text('Show Logs'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _showLogs(context),
-                    icon: const Icon(Icons.list_alt),
-                    label: const Text('View Logs'),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -271,14 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
-  void _showViamConnectionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => const ViamConnectionDialog(),
-    );
-  }
-  
+
   void _showPiConnectionDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -294,53 +281,53 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
-  void _testAllComponents(BuildContext context) async {
-    final sensorProvider = Provider.of<SensorProvider>(context, listen: false);
-    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-    final cameraProvider = Provider.of<CameraProvider>(context, listen: false);
-    
-    // Show loading indicator
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Testing all components...')),
+
+  void _showViamConnectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const ViamConnectionDialog(),
     );
+  }
+
+  Future<void> _testAllSensors() async {
+    final sensorProvider = Provider.of<SensorProvider>(context, listen: false);
+    await sensorProvider.testAllSensors();
     
-    try {
-      // Test sensors
-      sensorProvider.startMonitoring();
-      await Future.delayed(const Duration(seconds: 2));
-      sensorProvider.stopMonitoring();
-      
-      // Test audio
-      await audioProvider.testSpeakers();
-      
-      // Test camera
-      await cameraProvider.testCameras();
-      
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('All tests completed successfully')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Test failed: $e')),
+        const SnackBar(content: Text('Sensor test completed')),
       );
     }
   }
-  
+
+  Future<void> _testAudio() async {
+    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+    await audioProvider.testAudio();
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Audio test completed')),
+      );
+    }
+  }
+
+  Future<void> _testCamera() async {
+    final cameraProvider = Provider.of<CameraProvider>(context, listen: false);
+    await cameraProvider.testCamera();
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Camera test completed')),
+      );
+    }
+  }
+
   void _showLogs(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Application Logs'),
-        content: const SizedBox(
-          width: double.maxFinite,
-          height: 400,
-          child: Text(
-            'Logs would be displayed here.\n'
-            'In a production app, you would implement proper logging '
-            'with filtering and search capabilities.',
-          ),
-        ),
+        content: const Text('Log viewer would be implemented here.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
