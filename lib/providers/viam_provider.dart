@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'package:fluetooth_serial/bluetooth_serial.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viam_sdk/viam_sdk.dart';
 
-/// Enhanced Bluetooth connection provider with comprehensive device management
+/// Enhanced Viam connection provider with comprehensive robot management
 class ViamProvider extends ChangeNotifier {
   // Core connection and state management
-  BluetoothConnection? _connection;
   bool _isConnected = false;
   String _robotAddress = '';
   String _apiKeyId = '';
@@ -45,6 +43,9 @@ class ViamProvider extends ChangeNotifier {
   Stream<Map<String, dynamic>> get audioDataStream => _audioDataStream.stream;
   Stream<Map<String, dynamic>> get cameraDataStream => _cameraDataStream.stream;
   bool get autoReconnect => _autoReconnect;
+  String get apiKeyId => _apiKeyId;
+  String get apiKey => _apiKey;
+  Map<String, Map<String, dynamic>> get viamResources => _viamResources;
 
   /// Initialize the Viam provider with credentials
   Future<void> initialize({
@@ -70,7 +71,7 @@ class ViamProvider extends ChangeNotifier {
 
     try {
       final address = directAddress ?? _robotAddress;
-      _logger('ViamProvider', 'Connecting to Viam robot: $address (direct: $useDirectConnection)');
+      _logger('Connecting to Viam robot: $address (direct: $useDirectConnection)');
       
       RobotClientOptions options;
       if (useDirectConnection) {
@@ -96,7 +97,7 @@ class ViamProvider extends ChangeNotifier {
       await _registerComponents();
       
       notifyListeners();
-      _logger('ViamProvider', 'Successfully connected to Viam robot');
+      _logger('Successfully connected to Viam robot');
       
     } catch (e) {
       _connectionStatus = ConnectionStatus(
@@ -105,11 +106,11 @@ class ViamProvider extends ChangeNotifier {
         lastHeartbeat: DateTime.now(),
       );
       
-      _logger('ViamProvider', 'Error connecting to Viam robot: $e');
+      _logger('Error connecting to Viam robot: $e');
       
       if (_autoReconnect && _reconnectAttempts < _maxReconnectAttempts) {
         _reconnectAttempts++;
-        _logger('ViamProvider', 'Attempting to reconnect in 5 seconds... (attempt $_reconnectAttempts)');
+        _logger('Attempting to reconnect in 5 seconds... (attempt $_reconnectAttempts)');
         
         await Future.delayed(const Duration(seconds: 5));
         await connect(useDirectConnection: useDirectConnection, directAddress: directAddress);
@@ -129,9 +130,9 @@ class ViamProvider extends ChangeNotifier {
       _connectionStatus = ConnectionStatus(isConnected: false);
       
       notifyListeners();
-      _logger('ViamProvider', 'Disconnected from Viam robot');
+      _logger('Disconnected from Viam robot');
     } catch (e) {
-      _logger('ViamProvider', 'Error disconnecting from Viam robot: $e');
+      _logger('Error disconnecting from Viam robot: $e');
     }
   }
 
@@ -139,7 +140,7 @@ class ViamProvider extends ChangeNotifier {
   Future<void> _registerComponents() async {
     if (_robot == null) return;
     
-    _logger('ViamProvider', 'Registering custom components...');
+    _logger('Registering custom components...');
     
     // Register sensor components
     _viamResources['accelerometer'] = {
@@ -216,7 +217,7 @@ class ViamProvider extends ChangeNotifier {
       },
     };
     
-    _logger('ViamProvider', 'Registered ${_viamResources.length} components');
+    _logger('Registered ${_viamResources.length} components');
   }
 
   /// Start heartbeat monitoring
@@ -226,7 +227,7 @@ class ViamProvider extends ChangeNotifier {
       try {
         if (_robot != null) {
           final resourceNames = _robot?.resourceNames ?? [];
-          _logger('ViamProvider', 'Heartbeat - Connected resources: ${resourceNames.length}');
+          _logger('Heartbeat - Connected resources: ${resourceNames.length}');
           
           // Update connection status
           _connectionStatus = ConnectionStatus(
@@ -239,7 +240,7 @@ class ViamProvider extends ChangeNotifier {
           notifyListeners();
         }
       } catch (e) {
-        _logger('ViamProvider', 'Heartbeat failed: $e');
+        _logger('Heartbeat failed: $e');
         _connectionStatus = ConnectionStatus(
           isConnected: false,
           error: 'Heartbeat failed: $e',
@@ -288,10 +289,10 @@ class ViamProvider extends ChangeNotifier {
     try {
       if (_robot != null) {
         _audioDataStream.add(audioData);
-        _logger('ViamProvider', 'Audio data sent: ${audioData['type']}');
+        _logger('Audio data sent: ${audioData['type']}');
       }
     } catch (e) {
-      _logger('ViamProvider', 'Failed to send audio data: $e');
+      _logger('Failed to send audio data: $e');
     }
   }
 
@@ -300,10 +301,10 @@ class ViamProvider extends ChangeNotifier {
     try {
       if (_robot != null) {
         _cameraDataStream.add(cameraData);
-        _logger('ViamProvider', 'Camera data sent: ${cameraData['type']}');
+        _logger('Camera data sent: ${cameraData['type']}');
       }
     } catch (e) {
-      _logger('ViamProvider', 'Failed to send camera data: $e');
+      _logger('Failed to send camera data: $e');
     }
   }
 
@@ -314,16 +315,13 @@ class ViamProvider extends ChangeNotifier {
         return {'error': 'Not connected to Viam robot'};
       }
 
-      final result = await _robot!.doCommand(ResourceName()
-        ..namespace = 'rdk'
-        ..type = 'component'
-        ..subtype = 'generic'
-        ..name = resourceName, command);
+      final resource = _robot!.getResource(resourceName);
+      final result = await resource.doCommand(command);
 
-      _logger('ViamProvider', 'Command executed on $resourceName: $command');
+      _logger('Command executed on $resourceName: $command');
       return {'success': true, 'result': result};
     } catch (e) {
-      _logger('ViamProvider', 'Failed to execute command on $resourceName: $e');
+      _logger('Failed to execute command on $resourceName: $e');
       return {'error': 'Failed to execute command: $e'};
     }
   }
