@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   # Viam SDK for robot communication
-  viam_sdk: ^0.11.0
+  viam_sdk: ^0.10.0
 
   # USB connection and networking
   usb_serial: ^0.5.2
