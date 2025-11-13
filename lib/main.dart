@@ -53,7 +53,7 @@ class ViamPixel4aApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SensorProvider()),
+        ChangeNotifierProvider(create: (_) => SensorProvider()..startMonitoring()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         ChangeNotifierProvider(create: (_) => CameraProvider()),
         ChangeNotifierProvider(create: (_) => ViamProvider()),
