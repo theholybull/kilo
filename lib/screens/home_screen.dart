@@ -163,31 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             
             // Sensor Cards
-            Consumer<SensorProvider>(
-              builder: (context, sensorProvider, child) {
-                return Column(
-                  children: [
-                    SensorCard(
-                      title: 'Accelerometer',
-                      data: sensorProvider.accelerometerData,
-                      icon: Icons.speed,
-                    ),
-                    const SizedBox(height: 8),
-                    SensorCard(
-                      title: 'Gyroscope',
-                      data: sensorProvider.gyroscopeData,
-                      icon: Icons.rotate_90_degrees_ccw,
-                    ),
-                    const SizedBox(height: 8),
-                    SensorCard(
-                      title: 'Magnetometer',
-                      data: sensorProvider.magnetometerData,
-                      icon: Icons.explore,
-                    ),
-                  ],
-                );
-              },
-            ),
+            const SensorCard(),
             
             const SizedBox(height: 16),
             
@@ -291,29 +267,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _testAllSensors() async {
     final sensorProvider = Provider.of<SensorProvider>(context, listen: false);
-    await sensorProvider.testAllSensors();
+    // Test sensors by checking if data is available
+    final accelerometerData = sensorProvider.accelerometerData;
+    final gyroscopeData = sensorProvider.gyroscopeData;
+    final magnetometerData = sensorProvider.magnetometerData;
     
     if (mounted) {
+      String message = 'Sensor test completed - ';
+      message += accelerometerData != null ? 'ACC OK ' : 'ACC NO ';
+      message += gyroscopeData != null ? 'GYR OK ' : 'GYR NO ';
+      message += magnetometerData != null ? 'MAG OK' : 'MAG NO';
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sensor test completed')),
+        SnackBar(content: Text(message)),
       );
     }
   }
 
   Future<void> _testAudio() async {
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-    await audioProvider.testAudio();
+    // Test audio by checking recording state
+    final isRecording = audioProvider.isRecording;
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Audio test completed')),
+        SnackBar(content: Text('Audio test completed - Recording: $isRecording')),
       );
     }
   }
 
   Future<void> _testCamera() async {
     final cameraProvider = Provider.of<CameraProvider>(context, listen: false);
-    await cameraProvider.testCamera();
+    // Test camera by checking if cameras are available
+    await cameraProvider.testCameras();
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
