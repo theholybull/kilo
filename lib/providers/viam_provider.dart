@@ -33,7 +33,6 @@ class ViamProvider extends ChangeNotifier {
   
   // Logging
   static const String _tag = 'ViamProvider';
-  final _logger = developer.log;
 
   // Getters
   bool get isConnected => _isConnected;
@@ -71,7 +70,7 @@ class ViamProvider extends ChangeNotifier {
 
     try {
       final address = directAddress ?? _robotAddress;
-      _logger('Connecting to Viam robot: $address (direct: $useDirectConnection)');
+      developer.log('$_tag: Connecting to Viam robot: $address (direct: $useDirectConnection)');
       
       RobotClientOptions options;
       if (useDirectConnection) {
@@ -97,7 +96,7 @@ class ViamProvider extends ChangeNotifier {
       await _registerComponents();
       
       notifyListeners();
-      _logger('Successfully connected to Viam robot');
+      developer.log('$_tag: Successfully connected to Viam robot');
       
     } catch (e) {
       _connectionStatus = ConnectionStatus(
@@ -106,11 +105,11 @@ class ViamProvider extends ChangeNotifier {
         lastHeartbeat: DateTime.now(),
       );
       
-      _logger('Error connecting to Viam robot: $e');
+      developer.log('$_tag: Error connecting to Viam robot: $e');
       
       if (_autoReconnect && _reconnectAttempts < _maxReconnectAttempts) {
         _reconnectAttempts++;
-        _logger('Attempting to reconnect in 5 seconds... (attempt $_reconnectAttempts)');
+        developer.log('$_tag: Attempting to reconnect in 5 seconds... (attempt $_reconnectAttempts)');
         
         await Future.delayed(const Duration(seconds: 5));
         await connect(useDirectConnection: useDirectConnection, directAddress: directAddress);
@@ -130,9 +129,9 @@ class ViamProvider extends ChangeNotifier {
       _connectionStatus = ConnectionStatus(isConnected: false);
       
       notifyListeners();
-      _logger('Disconnected from Viam robot');
+      developer.log('$_tag: Disconnected from Viam robot');
     } catch (e) {
-      _logger('Error disconnecting from Viam robot: $e');
+      developer.log('$_tag: Error disconnecting from Viam robot: $e');
     }
   }
 
@@ -140,7 +139,7 @@ class ViamProvider extends ChangeNotifier {
   Future<void> _registerComponents() async {
     if (_robot == null) return;
     
-    _logger('Registering custom components...');
+    developer.log('$_tag: Registering custom components...');
     
     // Register sensor components
     _viamResources['accelerometer'] = {
@@ -217,7 +216,7 @@ class ViamProvider extends ChangeNotifier {
       },
     };
     
-    _logger('Registered ${_viamResources.length} components');
+    developer.log('$_tag: Registered ${_viamResources.length} components');
   }
 
   /// Start heartbeat monitoring
@@ -227,7 +226,7 @@ class ViamProvider extends ChangeNotifier {
       try {
         if (_robot != null) {
           final resourceNames = _robot?.resourceNames ?? [];
-          _logger('Heartbeat - Connected resources: ${resourceNames.length}');
+          developer.log('$_tag: Heartbeat - Connected resources: ${resourceNames.length}');
           
           // Update connection status
           _connectionStatus = ConnectionStatus(
@@ -240,7 +239,7 @@ class ViamProvider extends ChangeNotifier {
           notifyListeners();
         }
       } catch (e) {
-        _logger('Heartbeat failed: $e');
+        developer.log('$_tag: Heartbeat failed: $e');
         _connectionStatus = ConnectionStatus(
           isConnected: false,
           error: 'Heartbeat failed: $e',
@@ -289,10 +288,10 @@ class ViamProvider extends ChangeNotifier {
     try {
       if (_robot != null) {
         _audioDataStream.add(audioData);
-        _logger('Audio data sent: ${audioData['type']}');
+        developer.log('$_tag: Audio data sent: ${audioData['type']}');
       }
     } catch (e) {
-      _logger('Failed to send audio data: $e');
+      developer.log('$_tag: Failed to send audio data: $e');
     }
   }
 
@@ -301,10 +300,10 @@ class ViamProvider extends ChangeNotifier {
     try {
       if (_robot != null) {
         _cameraDataStream.add(cameraData);
-        _logger('Camera data sent: ${cameraData['type']}');
+        developer.log('$_tag: Camera data sent: ${cameraData['type']}');
       }
     } catch (e) {
-      _logger('Failed to send camera data: $e');
+      developer.log('$_tag: Failed to send camera data: $e');
     }
   }
 
@@ -315,22 +314,19 @@ class ViamProvider extends ChangeNotifier {
         return {'error': 'Not connected to Viam robot'};
       }
 
-      final resource = _robot!.resourceNames.firstWhere(
-        (r) => r.name == resourceName,
-        orElse: () => ResourceName()
-          ..namespace = 'rdk'
-          ..type = 'component'
-          ..subtype = 'generic'
-          ..name = resourceName,
-      );
+      final resourceNameObj = ResourceName()
+        ..namespace = 'rdk'
+        ..type = 'component'
+        ..subtype = 'generic'
+        ..name = resourceName;
       
       // For now, return mock data since we don't have the actual resource
       final result = {'status': 'success', 'command': command};
-
-      _logger('Command executed on $resourceName: $command');
+      
+      developer.log('$_tag: Command executed on $resourceName: $command');
       return {'success': true, 'result': result};
     } catch (e) {
-      _logger('Failed to execute command on $resourceName: $e');
+      developer.log('$_tag: Failed to execute command on $resourceName: $e');
       return {'error': 'Failed to execute command: $e'};
     }
   }

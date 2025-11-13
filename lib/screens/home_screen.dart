@@ -39,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<PiConnectionProvider>(context, listen: false).initialize();
     await Provider.of<EmotionDisplayProvider>(context, listen: false).initialize();
     await Provider.of<FaceDetectionProvider>(context, listen: false).initialize();
+    
+    // Start sensor monitoring
+    Provider.of<SensorProvider>(context, listen: false).startMonitoring();
   }
 
   @override
