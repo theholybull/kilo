@@ -75,6 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Colors.grey,
                 ),
                 onPressed: () => _showViamConnectionDialog(context),
+              );
+            },
+          ),
             
             IconButton(
               icon: const Icon(Icons.settings_ethernet),
@@ -263,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.settings),
+        onPressed: () => _showPiConnectionDialog(context),
         child: const Icon(Icons.settings),
       ),
     );

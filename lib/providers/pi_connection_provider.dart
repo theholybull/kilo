@@ -48,6 +48,9 @@ class PiConnectionProvider extends ChangeNotifier {
   Future<void> initialize() async {
     _logger.i('Initializing Pi connection provider...');
     
+    // Load saved configuration
+    await _loadConfiguration();
+    
     // Start background monitoring
     _startMonitoring();
     
@@ -308,6 +311,36 @@ class PiConnectionProvider extends ChangeNotifier {
     }
   }
   
+  Future<void> _loadConfiguration() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _piAddress = prefs.getString('pi_ip_address') ?? '10.10.10.67';
+      _autoConnect = prefs.getBool('auto_connect') ?? true;
+      _logger.i('Loaded configuration: Pi IP: $_piAddress, Auto-connect: $_autoConnect');
+    } catch (e) {
+      _logger.e('Error loading configuration: $e');
+      // Use defaults if loading fails
+      _piAddress = '10.10.10.67';
+      _autoConnect = true;
+    }
+  }
+
+  Future<void> saveConfiguration(String piAddress, bool autoConnect) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('pi_ip_address', piAddress);
+      await prefs.setBool('auto_connect', autoConnect);
+
+      _piAddress = piAddress;
+      _autoConnect = autoConnect;
+
+      _logger.i('Saved configuration: Pi IP: $piAddress, Auto-connect: $autoConnect');
+      notifyListeners();
+    } catch (e) {
+      _logger.e('Error saving configuration: $e');
+    }
+  }
+
   @override
   void dispose() {
     _pingTimer?.cancel();
@@ -315,42 +348,3 @@ class PiConnectionProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-    Future<void> _loadConfiguration() async {
-
-    Future<void> _loadConfiguration() async {
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        _piAddress = prefs.getString('pi_ip_address') ?? '10.10.10.67';
-        _autoConnect = prefs.getBool('auto_connect') ?? true;
-        _logger.i('Loaded configuration: Pi IP: $_piAddress, Auto-connect: $_autoConnect');
-      } catch (e) {
-        _logger.e('Error loading configuration: $e');
-        // Use defaults if loading fails
-        _piAddress = '10.10.10.67';
-        _autoConnect = true;
-      }
-    }
-
-    Future<void> saveConfiguration(String piAddress, bool autoConnect) async {
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('pi_ip_address', piAddress);
-        await prefs.setBool('auto_connect', autoConnect);
-        
-        _piAddress = piAddress;
-        _autoConnect = autoConnect;
-        
-        _logger.i('Saved configuration: Pi IP: $piAddress, Auto-connect: $autoConnect');
-        notifyListeners();
-      } catch (e) {
-        _logger.e('Error saving configuration: $e');
-      }
-    }
-
-    @override
-    void dispose() {
-      _pingTimer?.cancel();
-      _scanTimer?.cancel();
-      super.dispose();
-    }
-  }
