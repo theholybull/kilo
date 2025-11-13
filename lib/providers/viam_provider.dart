@@ -4,15 +4,19 @@ import 'package:logger/logger.dart';
 import 'dart:async';
 import 'dart:convert';
 
-class ViamConnectionStatus {
-  final bool isConnected;
-  final String? error;
-  final String? robotId;
-
-  ViamConnectionStatus({
+class ConnectionStatus {
+  bool isConnected;
+  String? robotId;
+  String? error;
+  DateTime? lastHeartbeat;
+  String? message;
+  
+  ConnectionStatus({
     required this.isConnected,
-    this.error,
     this.robotId,
+    this.error,
+    this.lastHeartbeat,
+    this.message,
   });
 }
 
@@ -20,8 +24,8 @@ class ViamProvider extends ChangeNotifier {
   final Logger _logger = Logger();
   
   RobotClient? _robot;
-  ViamConnectionStatus _connectionStatus = 
-      ViamConnectionStatus(isConnected: false);
+  ConnectionStatus _connectionStatus = 
+      ConnectionStatus(isConnected: false);
   
   // Connection parameters
   String _apiKeyId = '';
@@ -46,7 +50,7 @@ class ViamProvider extends ChangeNotifier {
   
   // Getters
   RobotClient? get robot => _robot;
-  ViamConnectionStatus get connectionStatus => _connectionStatus;
+  ConnectionStatus get connectionStatus => _connectionStatus;
   bool get isConnected => _connectionStatus.isConnected;
   String get apiKeyId => _apiKeyId;
   String get apiKey => _apiKey;
@@ -100,9 +104,10 @@ class ViamProvider extends ChangeNotifier {
       
       _robot = await RobotClient.atAddress(address, options);
       
-      _connectionStatus = ViamConnectionStatus(
+      _connectionStatus = ConnectionStatus(
         isConnected: true,
         robotId: address,
+        lastHeartbeat: DateTime.now(),
       );
       
       _reconnectAttempts = 0;
@@ -114,9 +119,10 @@ class ViamProvider extends ChangeNotifier {
       notifyListeners();
       _logger.i('Successfully connected to Viam robot');
     } catch (e) {
-      _connectionStatus = ViamConnectionStatus(
+      _connectionStatus = ConnectionStatus(
         isConnected: false,
         error: e.toString(),
+        lastHeartbeat: DateTime.now(),
       );
       
       _logger.e('Error connecting to Viam robot: $e');
@@ -139,7 +145,7 @@ class ViamProvider extends ChangeNotifier {
       await _robot?.close();
       _robot = null;
       
-      _connectionStatus = ViamConnectionStatus(isConnected: false);
+      _connectionStatus = ConnectionStatus(isConnected: false);
       
       notifyListeners();
       _logger.i('Disconnected from Viam robot');
@@ -417,5 +423,161 @@ class ViamProvider extends ChangeNotifier {
     _cameraDataStream.close();
     disconnect();
     super.dispose();
+  }
+}
+
+// Mock implementation for fallback when Viam SDK fails
+class MockRobotClient implements RobotClient {
+  bool _connected = false;
+  List<ResourceName> _resourceNames = [];
+  
+  MockRobotClient() {
+    _connected = true;
+    _resourceNames = [
+      ResourceName()
+        ..namespace = 'rdk'
+        ..type = 'component'
+        ..subtype = 'imu'
+        ..name = 'phone_imu',
+      ResourceName()
+        ..namespace = 'rdk'
+        ..type = 'component'
+        ..subtype = 'camera'
+        ..name = 'phone_camera',
+      ResourceName()
+        ..namespace = 'rdk'
+        ..type = 'component'
+        ..subtype = 'input_controller'
+        ..name = 'phone_audio',
+      ResourceName()
+        ..namespace = 'rdk'
+        ..type = 'component'
+        ..subtype = 'generic'
+        ..name = 'phone_sensors',
+    ];
+  }
+  
+  @override
+  List<ResourceName> get resourceNames => _resourceNames;
+  
+  @override
+  List<ResourceName> resourceNames = [];
+  
+  @override
+  String? get name => 'mock_robot';
+  
+  @override
+  Future<void> refresh() async {
+    // Mock implementation
+  }
+  
+  @override
+  Future<void> close() async {
+    _connected = false;
+  }
+  
+  @override
+  T componentByName<T extends Component>(String name) {
+    // Return mock components
+    if (name.contains('imu')) {
+      return MockIMU() as T;
+    } else if (name.contains('camera')) {
+      return MockCamera() as T;
+    } else if (name.contains('audio')) {
+      return MockAudio() as T;
+    }
+    throw UnimplementedError('Mock component not found: $name');
+  }
+  
+  @override
+  ResourceNamesClient get resourceNamesClient => throw UnimplementedError();
+  
+  @override
+  LogClient get logClient => throw UnimplementedError();
+  
+  @override
+  FrameSystemClient get frameSystemClient => throw UnimplementedError();
+  
+  @override
+  Stream<MapEntry<ResourceName, Status>> get statusStream => 
+    Stream.value(MapEntry(ResourceName()..name='mock', Status()));
+  
+  @override
+  Stream<Operation> get operationStream => Stream.empty();
+  
+  @override
+  Future<Operation> getOperationByName(String name) => 
+    Future.value(Operation());
+  
+  @override
+  Future<void> cancelOperation(Operation operation) async {
+    // Mock implementation
+  }
+  
+  @override
+  Future<void> blockForOperation(Operation operation) async {
+    // Mock implementation
+  }
+  
+  @override
+  Future<List<Operation>> getOperations() async => [];
+  
+  @override
+  Future<Map<String, dynamic>> getMachineMetadata() async => {};
+  
+  @override
+  Future<String> getLogEntries(Map<String, dynamic>? extra) async => '';
+  
+  @override
+  Future<T> transformOrientation<T>(Pose pose, String destination, {String? source}) async {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<T> transformPose<T>(Pose pose, String destination, {String? source}) async {
+    throw UnimplementedError();
+  }
+}
+
+// Mock component implementations
+class MockIMU implements IMU {
+  @override
+  Future<IMUReading> readReadings(Map<String, dynamic>? extra) async {
+    return IMUReading(
+      linAcc: Vector3(x: 0.0, y: 9.8, z: 0.0),
+      angVel: Vector3(x: 0.0, y: 0.0, z: 0.0),
+    );
+  }
+}
+
+class MockCamera implements Camera {
+  @override
+  Future<Image> getImage(Map<String, dynamic>? extra) async {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Stream<Image> getImages(Map<String, dynamic>? extra) {
+    return Stream.empty();
+  }
+  
+  @override
+  Map<String, dynamic>? get properties => null;
+  
+  @override
+  Future<RawImage> getRawImage(Map<String, dynamic>? extra) async {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<PointCloud> getPointCloud(Map<String, dynamic>? extra) async {
+    throw UnimplementedError();
+  }
+}
+
+class MockAudio implements AudioInput {
+  @override
+  Stream<Chunk> getAudio(Map<String, dynamic>? extra) {
+    return Stream.empty();
   }
 }
